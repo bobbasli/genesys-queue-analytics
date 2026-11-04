@@ -28,6 +28,8 @@ Tokens are kept in JavaScript memory only and disappear on refresh. Client ID an
 - Division endpoint and OAuth public-client support need tenant testing.
 - A normal web popup cannot guarantee always-on-top; a native wrapper is needed.
 
+GitHub Pages deployment test
+
 ## Architecture for next version
 
 Separate `auth`, `genesys-api`, `division-policy`, `analytics`, `metrics`, and `ui` modules. Add unit tests with sanitized API fixtures, user-selectable queue groups, timezone handling, CSV/HTML export, clear permissions errors and token refresh/relogin behavior. Consider a backend if stronger cross-tenant controls are needed.
