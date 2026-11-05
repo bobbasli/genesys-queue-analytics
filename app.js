@@ -108,8 +108,22 @@ function renderHelpMarkdown(markdown){
 }
 $('help-button').onclick=async()=>{
  const dialog=$('help-dialog');$('help-content').textContent='Handleiding laden...';dialog.showModal();
- try{const url=new URL('HELP.md',import.meta.url);const response=await fetch(url,{cache:'no-cache'});if(!response.ok)throw Error('HTTP '+response.status);if(!dialog.open)return;renderHelpMarkdown(await response.text());}
- catch(e){if(dialog.open)$('help-content').textContent='De handleiding kon niet worden geladen. Controleer of HELP.md in dezelfde map als de applicatie staat. ('+e.message+')';}
+ try{
+  let markdown=null;
+  try{
+   const response=await fetch(new URL('HELP.html',import.meta.url),{cache:'no-cache'});
+   if(!response.ok)throw Error('HELP.html HTTP '+response.status);
+   const documentHtml=new DOMParser().parseFromString(await response.text(),'text/html');
+   const source=documentHtml.getElementById('help-source');
+   if(!source)throw Error('HELP.html bevat geen handleiding');
+   markdown=source.textContent;
+  }catch(htmlError){
+   const response=await fetch(new URL('HELP.md',import.meta.url),{cache:'no-cache'});
+   if(!response.ok)throw Error('HELP.html niet beschikbaar; HELP.md HTTP '+response.status);
+   markdown=await response.text();
+  }
+  if(dialog.open)renderHelpMarkdown(markdown);
+ }catch(e){if(dialog.open)$('help-content').textContent='De handleiding kon niet worden geladen. Controleer of HELP.html naast de applicatie staat. ('+e.message+')';}
 };
 $('close-help').onclick=()=>$('help-dialog').close();
 $('close-help-bottom').onclick=()=>$('help-dialog').close();
