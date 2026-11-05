@@ -1,10 +1,14 @@
 # Genesys Queue Analytics
 
-**Versie 0.3.20 · 5 november 2026**
+**Versie 0.3.21 · 5 november 2026**
 
 Genesys Queue Analytics is een lichte, Nederlandstalige webapplicatie voor het volgen van **wachtrijprestaties, persoonlijke prestaties en agentstatussen** in Genesys Cloud. De applicatie draait volledig in de browser, kan worden ingebed als Genesys Cloud Client Application en kan ook in een afzonderlijk browservenster worden gebruikt.
 
 > **Status:** ontwikkel-/demoversie. De belangrijkste functies zijn geïmplementeerd, maar de berekeningen, rechten en API-responses moeten per Genesys Cloud-organisatie worden gevalideerd voordat je de cijfers als definitieve operationele rapportage gebruikt.
+
+## Gebruikershandleiding
+
+Voor aanmelden, wachtrijen en statistieken instellen, datum en mediatype kiezen, verversen en het openen van een apart venster: **[lees HELP.md](HELP.md)**. De handleiding is ook vanuit de app bereikbaar via het vraagteken rechtsboven, tussen Instellingen en Aanmelden. De app laadt `HELP.md` relatief aan de eigen locatie, zodat dit op GitHub Pages, Vimexx en andere HTTPS-hosts werkt. Publiceer `HELP.md` naast `index.html`, `app.js` en `style.css`.
 
 ## Wat kun je ermee?
 
@@ -151,6 +155,7 @@ De regionale API- en login-host worden bepaald door de ingestelde Genesys Cloud-
 
 | Versie | Belangrijkste wijziging |
 | --- | --- |
+| **0.3.21** | Ingebouwde helpknop en dynamisch geladen, Nederlandstalige `HELP.md` voor eindgebruikers |
 | **0.3.20** | Extra bescherming tegen ongeldige `mediaType=all`-filters; correcte versievermelding en cache-busting |
 | **0.3.19** | **Alle media** combineren; titel **Dagcijfers - [mediatype]** |
 | **0.3.18** | Compactere pop-upinstellingen; overbodige `config.js`-verwijzing verwijderd |
@@ -169,4 +174,4 @@ Mogelijke vervolgstappen zijn geautomatiseerde tests met geanonimiseerde API-fix
 
 ---
 
-**Genesys Queue Analytics** · Statische Genesys Cloud analytics-webapp · **v0.3.20**
+**Genesys Queue Analytics** · Statische Genesys Cloud analytics-webapp · **v0.3.21**
