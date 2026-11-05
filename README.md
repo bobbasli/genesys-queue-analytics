@@ -17,7 +17,7 @@ De Client Application URL ondersteunt `showAgents=false` (tabblad Agenten verber
 Voorbeeld:
 
 ```text
-https://www.dewitonline.nl/analytics/?clientId=JOUW_CLIENT_ID&region=mypurecloud.de&showAgents=false&primaryColor=%230078D4
+https://JOUW_DOMEIN/analytics/?clientId=JOUW_CLIENT_ID&region=mypurecloud.de&showAgents=false&primaryColor=%230078D4
 ```
 
 ## Wat kun je ermee?
@@ -123,7 +123,7 @@ users:readonly
 De regio en OAuth Client ID kunnen via de interface worden opgeslagen of via URL-parameters worden meegegeven:
 
 ```text
-https://www.dewitonline.nl/analytics/?clientId=JOUW_CLIENT_ID&region=mypurecloud.de
+https://JOUW_DOMEIN/analytics/?clientId=JOUW_CLIENT_ID&region=mypurecloud.de
 ```
 
 De Client ID is geen geheim. Gebruik nooit een client secret of access token in de URL.
