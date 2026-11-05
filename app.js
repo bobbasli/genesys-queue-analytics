@@ -5,6 +5,13 @@ const DEPLOY = window.GQA_CONFIG || {};
 function readJson(storage,key,fallback=null){try{const value=storage.getItem(key);return value===null?fallback:JSON.parse(value);}catch{return fallback;}}
 const savedConfig=readJson(localStorage,'gqa_config',{});
 const pendingAuth=readJson(sessionStorage,'gqa_pkce');
+const rawShowAgents=params.get('showAgents') ?? (params.has('code')?pendingAuth?.showAgents:null);
+const showAgents=rawShowAgents===null||rawShowAgents===undefined?true:String(rawShowAgents).toLowerCase()!=='false';
+const rawPrimaryColor=params.get('primaryColor') ?? (params.has('code')?pendingAuth?.primaryColor:null);
+const primaryColor=/^#[0-9a-fA-F]{6}$/.test(rawPrimaryColor||'')?rawPrimaryColor:'#1A2B67';
+document.documentElement.style.setProperty('--primary-color',primaryColor);
+if(!showAgents){$('report-tab-agents').hidden=true;$('report-panel-agents').hidden=true;}
+
 const urlRegion=params.get('region') || (params.has('code')?pendingAuth?.region:null);
 
 const urlClient=params.get('clientId') || (params.has('code')?pendingAuth?.client:null);
@@ -20,6 +27,8 @@ $('day').value=dateLocal(new Date());
 const appUrl=new URL(location.origin+location.pathname);
 if(validClient(urlClient))appUrl.searchParams.set('clientId',urlClient);
 if(allowedRegions.includes(urlRegion))appUrl.searchParams.set('region',urlRegion);
+if(rawShowAgents!==null&&rawShowAgents!==undefined)appUrl.searchParams.set('showAgents',String(showAgents));
+if(rawPrimaryColor&&/^#[0-9a-fA-F]{6}$/.test(rawPrimaryColor))appUrl.searchParams.set('primaryColor',primaryColor);
 
 const redirectUri=location.origin+location.pathname,launchUri=appUrl.href;
 let accessToken=null,expiresAt=0,myQueues=[],myId=null,orgId=null,loading=false,lastReport=null;
@@ -58,7 +67,7 @@ function authBase(){return 'https://login.'+$('region').value;}
 function save(){const c=$('client').value.trim();if(!validClient(c))throw Error('Vul een geldige OAuth Client ID in');localStorage.setItem('gqa_config',JSON.stringify({client:c,region:$('region').value}));}
 function randomUrlSafe(size=32){const b=crypto.getRandomValues(new Uint8Array(size));return btoa(String.fromCharCode(...b)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 async function sha256base64url(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
-async function login(){save();const verifier=randomUrlSafe(48),state=randomUrlSafe(24);sessionStorage.setItem('gqa_pkce',JSON.stringify({verifier,state,region:$('region').value,client:$('client').value.trim(),time:Date.now()}));const url=new URL(authBase()+'/oauth/authorize');url.search=new URLSearchParams({response_type:'code',client_id:$('client').value.trim(),redirect_uri:redirectUri,code_challenge:await sha256base64url(verifier),code_challenge_method:'S256',state});location.assign(url.href);}
+async function login(){save();const verifier=randomUrlSafe(48),state=randomUrlSafe(24);sessionStorage.setItem('gqa_pkce',JSON.stringify({verifier,state,region:$('region').value,client:$('client').value.trim(),showAgents,primaryColor,time:Date.now()}));const url=new URL(authBase()+'/oauth/authorize');url.search=new URLSearchParams({response_type:'code',client_id:$('client').value.trim(),redirect_uri:redirectUri,code_challenge:await sha256base64url(verifier),code_challenge_method:'S256',state});location.assign(url.href);}
 async function callback(){if(!params.has('code')&&!params.has('error'))return false;const p=readJson(sessionStorage,'gqa_pkce');if(!p||Date.now()-p.time>600000||p.state!==params.get('state')||p.region!==$('region').value)throw Error('OAuth state ongeldig of verlopen');if(params.has('error'))throw Error(params.get('error_description')||params.get('error'));const response=await fetch(authBase()+'/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code:params.get('code'),redirect_uri:redirectUri,client_id:p.client,code_verifier:p.verifier})});const data=await response.json();if(!response.ok||!data.access_token)throw Error('Token ophalen mislukt: '+JSON.stringify(data));accessToken=data.access_token;expiresAt=Date.now()+(data.expires_in||3600)*1000;sessionStorage.removeItem('gqa_pkce');history.replaceState(null,'',launchUri);await discover();if(selectedQueues().length)await load();return true;}
 // v0.3.20: 'all' is a UI choice, never a Genesys mediaType.
 // Sanitize analytics request bodies centrally as a defensive measure.
@@ -314,9 +323,9 @@ async function loadAgents(){
   if(agentView){agentRender();if(failures)agentMessage(`${failures} statusaanvragen mislukt; controleer presence/routing-rechten en de Network-responses.`);}
  }catch(e){console.warn('[GQA] Agenten',e);agentMessage('Agenten niet beschikbaar: '+e.message);}finally{agentBusy=false;updateRefreshButton();}
 }
-function setReportTab(which){agentView=which==='agents';$('report-panel-queues').hidden=agentView;$('report-panel-agents').hidden=!agentView;for(const [id,active] of [['report-tab-queues',!agentView],['report-tab-agents',agentView]]){$(id).classList.toggle('active',active);$(id).setAttribute('aria-selected',String(active));}if(agentTimer){clearInterval(agentTimer);agentTimer=null;}if(agentView){loadAgents();agentTimer=setInterval(()=>{if(!document.hidden)loadAgents();},AGENT_INTERVAL);}else if(!lastReport&&accessToken&&selectedQueues().length)requestAutoLoad();updateRefreshButton();}
+function setReportTab(which){if(which==='agents'&&!showAgents)return;agentView=which==='agents';$('report-panel-queues').hidden=agentView;$('report-panel-agents').hidden=!agentView;for(const [id,active] of [['report-tab-queues',!agentView],['report-tab-agents',agentView]]){$(id).classList.toggle('active',active);$(id).setAttribute('aria-selected',String(active));}if(agentTimer){clearInterval(agentTimer);agentTimer=null;}if(agentView){loadAgents();agentTimer=setInterval(()=>{if(!document.hidden)loadAgents();},AGENT_INTERVAL);}else if(!lastReport&&accessToken&&selectedQueues().length)requestAutoLoad();updateRefreshButton();}
 $('show-all-queues').checked=false;$('show-all-queues').onchange=queueVisibilityChanged;
-$('show-unavailable').checked=false;$('show-unavailable').onchange=agentRender;$('report-tab-queues').onclick=()=>setReportTab('queues');$('report-tab-agents').onclick=()=>setReportTab('agents');
+$('show-unavailable').checked=false;$('show-unavailable').onchange=agentRender;$('report-tab-queues').onclick=()=>setReportTab('queues');$('report-tab-agents').onclick=()=>{if(showAgents)setReportTab('agents');};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&agentView)loadAgents();});
 
 function act(fn){return async()=>{try{await fn();}catch(e){console.error(e);status('Fout: '+e.message);}};}
