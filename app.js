@@ -91,6 +91,28 @@ function storeQueues(){if(myId)localStorage.setItem(selectionKey('queues'),JSON.
 async function discover(){status('Queue-lidmaatschappen ophalen...');const me=await api('/api/v2/users/me?expand=division');myId=me.id;orgId=me.organization?.id||null;$('identity').textContent=me.name||me.username||'Aangemeld';$('account-action').hidden=false;$('account-button').title='Afmelden bij Genesys Cloud';const memberships=await pages('/api/v2/users/'+encodeURIComponent(me.id)+'/queues','entities');queueMemberships=memberships;activeQueueIds=new Set();const seen=new Set();myQueues=memberships.map(item=>{const q=item?.queue||item;const joined=item?.joined??item?.isJoined??q?.joined??q?.isJoined; if(q?.id&&joined!==false)activeQueueIds.add(q.id);return q;}).filter(q=>q&&q.id&&!seen.has(q.id)&&seen.add(q.id)).sort((a,b)=>(a.name||'').localeCompare(b.name||'','nl'));agentGroupLoaded=null;const old=readJson(localStorage,selectionKey('queues'));$('queues').replaceChildren();for(const q of myQueues){const label=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.value=q.id;cb.checked=!Array.isArray(old)||old.includes(q.id);cb.addEventListener('change',storeQueues);label.append(cb,document.createTextNode(q.name||q.id));$('queues').append(label);}$('select-all').disabled=!myQueues.length;$('select-none').disabled=!myQueues.length;const savedMedia=localStorage.getItem(selectionKey('media'));if(savedMedia&&MEDIA[savedMedia])$('media').value=savedMedia;renderMetricChoices();$('report-title').textContent='Dagcijfers - '+MEDIA[$('media').value];status(`${myQueues.length} queue(s) gevonden.`);if(agentView)loadAgents();}
 function settingsTab(tab){const queues=tab==='queues';$('panel-queues').hidden=!queues;$('panel-metrics').hidden=queues;for(const [id,active] of [['tab-queues',queues],['tab-metrics',!queues]]){$(id).classList.toggle('active',active);$(id).setAttribute('aria-selected',String(active));}}
 function openSettings(tab='queues'){settingsTab(tab);$('settings-dialog').showModal();}
+// Help is loaded relative to this module, not from a fixed hostname or deployment path.
+// Build Markdown with textContent (no HTML injection, no external dependencies).
+function renderHelpMarkdown(markdown){
+ const root=$('help-content');root.replaceChildren();let list=null;
+ const inline=(element,value)=>{const parts=String(value).split(/(\*\*[^*]+\*\*|`[^`]+`)/g);for(const part of parts){if(part.startsWith('**')&&part.endsWith('**')){const strong=document.createElement('strong');strong.textContent=part.slice(2,-2);element.append(strong);}else if(part.startsWith('`)&&part.endsWith('`)){const code=document.createElement('code');code.textContent=part.slice(1,-1);element.append(code);}else element.append(document.createTextNode(part));}};
+ for(const raw of markdown.replace(/\r\n?/g,'\n').split('\n')){
+  const line=raw.trim();if(!line){list=null;continue;}
+  if(/^---+$/.test(line)){root.append(document.createElement('hr'));list=null;continue;}
+  const heading=line.match(/^(#{1,3})\s+(.+)$/);
+  if(heading){list=null;const el=document.createElement('h'+Math.min(heading[1].length+1,4));inline(el,heading[2]);root.append(el);continue;}
+  const bullet=line.match(/^[-*]\s+(.+)$/),number=line.match(/^\d+\.\s+(.+)$/);
+  if(bullet||number){const kind=bullet?'ul':'ol';if(!list||list.tagName.toLowerCase()!==kind){list=document.createElement(kind);root.append(list);}const li=document.createElement('li');inline(li,(bullet||number)[1]);list.append(li);continue;}
+  list=null;const p=document.createElement('p');inline(p,line.replace(/^\*(.+)\*$/,'$1'));root.append(p);
+ }
+}
+$('help-button').onclick=async()=>{
+ const dialog=$('help-dialog');$('help-content').textContent='Handleiding laden...';dialog.showModal();
+ try{const url=new URL('HELP.md',import.meta.url);const response=await fetch(url,{cache:'no-cache'});if(!response.ok)throw Error('HTTP '+response.status);if(!dialog.open)return;renderHelpMarkdown(await response.text());}
+ catch(e){if(dialog.open)$('help-content').textContent='De handleiding kon niet worden geladen. Controleer of HELP.md in dezelfde map als de applicatie staat. ('+e.message+')';}
+};
+$('close-help').onclick=()=>$('help-dialog').close();
+$('close-help-bottom').onclick=()=>$('help-dialog').close();
 $('settings-button').onclick=()=>openSettings();$('close-settings').onclick=()=>$('settings-dialog').close();$('close-settings-bottom').onclick=()=>$('settings-dialog').close();$('tab-queues').onclick=()=>settingsTab('queues');$('tab-metrics').onclick=()=>settingsTab('metrics');
 $('select-all').onclick=()=>{$('queues').querySelectorAll('input').forEach(x=>x.checked=true);storeQueues();};$('select-none').onclick=()=>{$('queues').querySelectorAll('input').forEach(x=>x.checked=false);storeQueues();};
 function metricKey(){return selectionKey('metrics')+'_'+$('media').value;}
