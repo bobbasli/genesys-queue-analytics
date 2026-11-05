@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><title>Genesys Queue Analytics — Help</title><style>body{font:15px/1.6 system-ui,Arial,sans-serif;margin:24px auto;max-width:850px;padding:0 20px;color:#20304b}#help-source{white-space:pre-wrap;font:inherit}</style></head><body><h1>Gebruikershandleiding</h1><main id="help-source"># Help bij Genesys Queue Analytics
+
+Welkom bij Genesys Queue Analytics. Met deze applicatie bekijk je de dagcijfers van jouw wachtrijen, je eigen prestaties en de actuele status van agenten.
+
+## 1. Aanmelden bij Genesys Cloud
+
+1. Open de applicatie via de link van je organisatie of via Genesys Cloud.
+2. Als je nog geen verbinding hebt ingesteld, selecteer je de juiste **Genesys-regio** en vul je de **OAuth Client ID** in die je van je beheerder hebt gekregen.
+3. Klik op **Instellingen opslaan**.
+4. Klik rechtsboven op **Aanmelden met Genesys** en meld je aan met je normale Genesys Cloud-account.
+5. Na aanmelden verschijnt rechtsboven je naam. Klik daarop om de sessie af te melden.
+
+Let op: je hebt toegang nodig tot de betreffende Genesys-gegevens. Bij ontbrekende rechten kan een onderdeel leeg blijven of een foutmelding tonen.
+
+## 2. Datum kiezen
+
+Gebruik het veld **Datum** boven het rapport om de gewenste dag te selecteren. De applicatie laadt de dagcijfers automatisch opnieuw.
+
+Voor **vandaag** zie je naast de dagstatistieken ook actuele wachtrijgegevens. Bij eerdere datums zijn **Waiting** en **Wait Time** niet beschikbaar: die cijfers zijn uitsluitend live.
+
+## 3. Mediatype kiezen
+
+Kies in de keuzelijst **Mediatype** een van de volgende opties:
+
+- **Alle media**: gecombineerde gegevens van de beschikbare mediatypen.
+- **Voice**: telefonie.
+- **E-mail**: e-mailinteracties.
+- **Chat**: webchat.
+- **Messaging**: berichtenkanalen.
+- **Callback**: terugbelverzoeken.
+
+Het rapport wordt automatisch bijgewerkt. Niet iedere statistiek heeft voor elk mediatype dezelfde betekenis.
+
+## 4. Wachtrijen instellen
+
+1. Klik rechtsboven op het **tandwiel** (Instellingen).
+2. Open het tabblad **Queues**.
+3. Vink de wachtrijen aan die je wilt volgen. Je kunt ook **Alles selecteren** of **Alles deselecteren** gebruiken.
+4. Klik op **Gereed** om het instellingenvenster te sluiten.
+
+Je kunt alleen wachtrijen kiezen waarvan je zelf lid bent. In het tabblad **Queues** van het rapport worden standaard de geselecteerde wachtrijen getoond waarin je actief bent. Zet **Alle geselecteerde queues tonen** aan om ook je andere geselecteerde wachtrijen te zien.
+
+## 5. Statistieken instellen
+
+1. Klik op het **tandwiel** (Instellingen).
+2. Open het tabblad **Statistieken**.
+3. Kies maximaal **zes statistieken** voor het wachtrijenoverzicht.
+4. Gebruik **Standaardstatistieken** om de oorspronkelijke selectie te herstellen.
+5. Sluit af met **Gereed**.
+
+De instellingen worden voor je bewaard in deze browser. **Waiting** en **Wait Time** worden, als je ze kiest, vooraan geplaatst.
+
+## 6. Cijfers en totalen bekijken
+
+In het tabblad **Queues** zie je de prestaties per wachtrij en een regel **Totalen**. Boven de tabel staan de kaarten **Mijn prestaties** met jouw persoonlijke cijfers voor de geselecteerde wachtrijen.
+
+**Waiting** is het actuele aantal wachtende interacties. **Wait Time** geeft de langste actuele wachttijd weer. Die tijd loopt op zolang de interactie wacht. De totalenregel telt wachtenden op, maar telt wachttijden niet bij elkaar op.
+
+Een streepje (**—**) betekent dat een waarde niet beschikbaar of niet van toepassing is; het is niet automatisch nul.
+
+## 7. Agenten bekijken
+
+Klik op het tabblad **Agenten** om medewerkers te bekijken die lid zijn van jouw wachtrijen. Je ziet hun naam, presence, **Tijd in status** en een telefoonicoon wanneer Genesys meldt dat zij in interactie zijn.
+
+Agenten staan gesorteerd met de langste bekende tijd in status bovenaan. Zet **Ook niet-beschikbare agenten tonen** aan om bijvoorbeeld Offline, Unavailable, Out of Office en onbekende statussen te zien.
+
+## 8. Statistieken verversen
+
+Gebruik de knop met de **ronde pijlen** rechts naast de tabbladen **Queues** en **Agenten** om de gegevens handmatig te verversen.
+
+- Bij de **Queues** worden de cijfers voor vandaag automatisch vernieuwd. Live Waiting wordt vaker bijgewerkt dan de dagprestaties.
+- Bij **Agenten** wordt de status automatisch ongeveer iedere 15 seconden vernieuwd.
+- De teller voor wachttijd en Tijd in status loopt tussentijds iedere seconde op.
+- Bij een historische datum is de handmatige live-verversknop niet actief.
+
+Wanneer het venster op de achtergrond staat, kunnen automatische verversingen tijdelijk pauzeren.
+
+## 9. Openen in een apart venster
+
+Klik bovenaan naast **Mediatype** op het pictogram **Open apart venster** (vierkant met diagonale pijl). De applicatie opent dan in een los browservenster, zodat je haar naast Genesys Cloud kunt gebruiken.
+
+Als er niets gebeurt, controleer dan of je browser pop-ups blokkeert en sta pop-ups toe voor de website waarop de app draait. Een browser kan de adresbalk blijven tonen; dat is normaal.
+
+Wil je op Windows het venster altijd boven andere vensters houden? Dan kun je optioneel **Microsoft PowerToys – Always On Top** gebruiken (sneltoets **Win + Ctrl + T**). Dit is geen ingebouwde functie van de app.
+
+## 10. Hulp opnieuw openen
+
+Klik rechtsboven op het **vraagteken in een rondje** tussen het tandwiel en de aanmeldknop. De hulp wordt geladen uit het bestand **HELP.md** in dezelfde map als de applicatie. Daardoor werkt deze knop ook wanneer de applicatie op een andere HTTPS-host wordt geplaatst, zolang HELP.md wordt meegepubliceerd.
+
+## Problemen oplossen
+
+- **Ik kan niet aanmelden:** controleer de regio, OAuth Client ID en of de beheerder het juiste redirectadres heeft ingesteld.
+- **Ik zie geen wachtrijen:** controleer je queue-lidmaatschap en Genesys-rechten.
+- **Ik zie geen cijfers:** controleer datum, mediatype, geselecteerde queues en benodigde analytics-rechten.
+- **Agentstatus is Onbekend:** de benodigde statusinformatie is niet beschikbaar; dit betekent niet automatisch Offline.
+- **Het losse venster opent niet:** sta pop-ups toe voor de huidige website.
+- **De helptekst laadt niet:** controleer of **HELP.md** naast **index.html** op de webserver staat en bereikbaar is via HTTPS.
+
+---
+
+*Genesys Queue Analytics — Gebruikershandleiding, versie 0.3.21*
+</main></body></html>
