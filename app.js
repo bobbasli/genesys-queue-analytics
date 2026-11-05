@@ -95,7 +95,7 @@ function openSettings(tab='queues'){settingsTab(tab);$('settings-dialog').showMo
 // Build Markdown with textContent (no HTML injection, no external dependencies).
 function renderHelpMarkdown(markdown){
  const root=$('help-content');root.replaceChildren();let list=null;
- const inline=(element,value)=>{const parts=String(value).split(/(\*\*[^*]+\*\*|`[^`]+`)/g);for(const part of parts){if(part.startsWith('**')&&part.endsWith('**')){const strong=document.createElement('strong');strong.textContent=part.slice(2,-2);element.append(strong);}else if(part.startsWith('`)&&part.endsWith('`)){const code=document.createElement('code');code.textContent=part.slice(1,-1);element.append(code);}else element.append(document.createTextNode(part));}};
+ const inline=(element,value)=>{const parts=String(value).split(/(\*\*[^*]+\*\*|`[^`]+`)/g);for(const part of parts){if(part.startsWith('**')&&part.endsWith('**')){const strong=document.createElement('strong');strong.textContent=part.slice(2,-2);element.append(strong);}else if(part.startsWith('`')&&part.endsWith('`')){const code=document.createElement('code');code.textContent=part.slice(1,-1);element.append(code);}else element.append(document.createTextNode(part));}};
  for(const raw of markdown.replace(/\r\n?/g,'\n').split('\n')){
   const line=raw.trim();if(!line){list=null;continue;}
   if(/^---+$/.test(line)){root.append(document.createElement('hr'));list=null;continue;}
