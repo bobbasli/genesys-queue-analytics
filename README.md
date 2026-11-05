@@ -1,6 +1,6 @@
 # Genesys Queue Analytics
 
-**Versie 0.3.21 · 5 november 2026**
+**Versie 0.3.22 · 5 november 2026**
 
 Genesys Queue Analytics is een lichte, Nederlandstalige webapplicatie voor het volgen van **wachtrijprestaties, persoonlijke prestaties en agentstatussen** in Genesys Cloud. De applicatie draait volledig in de browser, kan worden ingebed als Genesys Cloud Client Application en kan ook in een afzonderlijk browservenster worden gebruikt.
 
@@ -155,7 +155,7 @@ De regionale API- en login-host worden bepaald door de ingestelde Genesys Cloud-
 
 | Versie | Belangrijkste wijziging |
 | --- | --- |
-| **0.3.21** | Ingebouwde helpknop en dynamisch geladen, Nederlandstalige `HELP.md` voor eindgebruikers |
+| **0.3.22** | Ingebouwde helpknop en dynamisch geladen, Nederlandstalige `HELP.md` voor eindgebruikers |
 | **0.3.20** | Extra bescherming tegen ongeldige `mediaType=all`-filters; correcte versievermelding en cache-busting |
 | **0.3.19** | **Alle media** combineren; titel **Dagcijfers - [mediatype]** |
 | **0.3.18** | Compactere pop-upinstellingen; overbodige `config.js`-verwijzing verwijderd |
@@ -174,4 +174,9 @@ Mogelijke vervolgstappen zijn geautomatiseerde tests met geanonimiseerde API-fix
 
 ---
 
-**Genesys Queue Analytics** · Statische Genesys Cloud analytics-webapp · **v0.3.21**
+**Genesys Queue Analytics** · Statische Genesys Cloud analytics-webapp · **v0.3.22**
+
+
+### Help op verschillende webservers
+
+De helpknop laadt eerst `HELP.html`, omdat sommige webservers directe toegang tot `.md`-bestanden blokkeren met HTTP 403. Als `HELP.html` ontbreekt, probeert de app `HELP.md`. Publiceer beide bestanden naast `index.html` en `app.js`. De paden zijn relatief aan de applicatie en werken daardoor ook bij een andere host of submap.
